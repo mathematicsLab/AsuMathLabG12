@@ -49,10 +49,10 @@ void operation(string input )
         for(int i=input.find('[');i<input.find(']')-1;i++){if(input[i]==';' && input[i+1]!=']' && input[i+2]!=']' && input[i+3]!=']' )numRow++;}
         double values[2000]; int valuesIndex=0; 
 
-        if(input[input.size()-1]==';'){
+      /*  if(input[input.size()-1]==';'){
             input=input.substr(0,input.find(']')+1);
-        }
-cout<<input<<endl;
+        }*/
+//cout<<input<<endl;
 
          //replac space with commas
         for(int i=input.find('[')+1;i<input.find(']')+1;i++){
@@ -242,7 +242,7 @@ int main(int argc, char* argv[]){
 
 while ( getline (inFile,input)) {
 
- cout<<input<<endl;
+// cout<<input<<endl;
       operation(input);
 
 }
