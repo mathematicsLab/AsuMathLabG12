@@ -67,7 +67,7 @@ cout<<input<<endl;
         // parse matrix element
 
      //   int start=input.find('=')+2; int end=input.find(",",start+1); string s;
-     int start=input.find('[')+1; int end=input.find(",",start+2); string s;
+     int start=input.find('[')+1; int end=input.find(","); string s;
       // cout<<input<<endl;
         while(end<=input.size()){
          s=input.substr(start,end-start);   //cout<<s<<"--";
