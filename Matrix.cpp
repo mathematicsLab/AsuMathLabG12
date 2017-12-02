@@ -541,14 +541,28 @@ Matrix Matrix::Inv( Matrix& a)
             throw "The matrix must be a square matrix";
         if (nRow ==1 && nCol==1)
             return pData[0][0];
-        double det=0,m=1;
-        for (int iC=0;iC<nCol;iC++)
+        else if (nRow ==2 && nCol == 2)
+            return pData[0][0]*pData[1][1]-pData[1][0]*pData[0][1];
+        else
         {
-            det+=m * (pData[0][iC]) * getCofactor(0,iC).matDeterminant ();
-            m*=-1;
+            double det=1,temp,temp1;
+            int r=0;
+            while (r<nRow)
+            {
+                temp=pData[r][r];
+                for (int ir=r+1;ir<nRow;ir++)
+                {
+                    for (int ic=0;ic<nCol;ic++)
+                    {
+                        pData[ir][ic]=pData[ir][ic]-(pData[ir][r]/temp)*pData[r][ic];
+                    }
+                }
+                r++;
+            }
+            for (int i=0;i<nRow;i++)
+                det*=pData[i][i];
+            return det;
         }
-        return det;
-
     }
     void Matrix::matProduct(double Const) //Multiply each number in the matrix with Constant
     {
@@ -592,19 +606,140 @@ Matrix Matrix::Inv( Matrix& a)
         else
             "The matrix must be a square matrix";
     }
-    void Matrix::inverseMat (Matrix &A) //Get inverse of the matrix
+
+    bool Matrix :: isZeros()
     {
-        double Const =A.matDeterminant();
-        Matrix B(A.nRow,A.nCol);
-        if (Const !=0)
+        int temp=0;
+        for (int ir=0;ir<nRow;ir++)
         {
-            Const=1.0/Const;
-            B.minorMat(A);
-            this->matTranspose(B);
-            this->matProduct(Const);
+            for (int ic=0;ic<nCol;ic++)
+            {
+                if (pData[ir][ic] == 0)
+                {
+                    temp++;
+                }
+            }
+        }
+        if (temp == nRow * nCol)
+            return true;
+        else
+            return false;
+    }
+
+
+        void Matrix :: eye ()
+    {
+        for (int i=0;i<nRow;i++)
+        {
+            for (int j=0;j<nCol;j++)
+            {
+                if (i==j)
+                    pData[i][j]=1;
+                else
+                    pData[i][j]=0;
+            }
+        }
+    }
+
+
+   void Matrix :: inverseMat (Matrix A)
+    {
+        eye();
+        double temp,temp1,temp2,temp3,temp4;
+        int r=0;
+        while (r<nRow)
+        {
+        temp=A.pData[r][r];
+        if (temp == 0 )
+        {
+            for (int ir=r;ir<nRow;ir++)
+            {
+            if (r == nRow-1)
+            	break;
+            temp1=A.pData[r+1][r];
+            for (int ic=0;ic<nCol;ic++)
+            {
+            	if (temp1 == 0) break;
+            	temp3=A.pData[r][ic];
+            	temp4=pData[r][ic];
+                A.pData[ir][ic]=A.pData[ir+1][ic]/temp1;
+                pData[ir][ic]=pData[ir+1][ic]/temp1;
+                A.pData[ir+1][ic]=temp3;
+                pData[ir+1][ic]=temp4;
+                temp2=1;
+            }
+            if (temp2 ==1 ) break;
+            }
+        }
+        else 
+        {
+        for (int c=0;c<nCol;c++)
+        {
+        A.pData[r][c]/=temp;
+        pData[r][c]/=temp;
+        temp2=A.pData[r][c];
+        temp3=pData[r][c];
+        }
+    }
+
+        if (r==0)
+        {
+           for (int ir=r+1;ir<nRow;ir++)
+        {
+            temp1=A.pData[ir][r];
+            for (int ic=0;ic<nCol;ic++)
+            {
+                A.pData[ir][ic]-=temp1*A.pData[r][ic];
+                pData[ir][ic]-=temp1*pData[r][ic];
+                temp2=A.pData[ir][ic];
+                temp3=pData[ir][ic];
+            }
+        }
+        }
+        else if (r==nRow-1)
+        {
+            for (int ir=r-1;ir>=0;ir--)
+            {
+                temp1=A.pData[ir][r];
+                for (int ic=0;ic<nCol;ic++)
+                {
+                A.pData[ir][ic]-=temp1*A.pData[r][ic] ;
+                pData[ir][ic]-=temp1*pData[r][ic] ;
+                temp2=A.pData[ir][ic];
+                temp3=pData[ir][ic];
+                }
+            }
         }
         else
-            throw "ERROR: singular Matrix";
+        {
+             for (int ir=r+1;ir<nRow;ir++)
+        {
+            temp1=A.pData[ir][r];
+            for (int ic=0;ic<nCol;ic++)
+            {
+                A.pData[ir][ic]-=temp1*A.pData[r][ic] ;
+                pData[ir][ic]-=temp1*pData[r][ic];
+                temp2=A.pData[ir][ic];
+                temp3=pData[ir][ic];
+            }
+        }
+
+          for (int ir=r-1;ir>=0;ir--)
+            {
+                temp1=A.pData[ir][r];
+                for (int ic=0;ic<nCol;ic++)
+                {
+                A.pData[ir][ic]-=temp1*A.pData[r][ic];
+                pData[ir][ic]-=temp1*pData[r][ic] ;
+                temp2=A.pData[ir][ic];
+                temp3=pData[ir][ic];
+                }
+            }
+
+        }
+
+        r++;
+        }
     }
 
 void Matrix::multiply (Matrix &A) // Multiply Two matrices
@@ -648,6 +783,8 @@ void Matrix::multiply (Matrix &A) // Multiply Two matrices
         return C;
 
     } */
+
+
      void Matrix::N_A_N ()   //put not a number a value in case of divide by a singular matrix
     {
         for (int i=0;i<nRow;i++)
@@ -659,11 +796,12 @@ void Matrix::multiply (Matrix &A) // Multiply Two matrices
     }    
 
 
-Matrix Matrix::operator / (Matrix & A)
+Matrix Matrix::operator / (Matrix &A)
     {
         Matrix B (A.nRow,A.nCol);
+        B.inverseMat(A);
         Matrix C (nRow,nCol);
-       if (A.matDeterminant()==0)
+       if (A.matDeterminant() == 0)
        {
            C.N_A_N();
            return C;
@@ -672,12 +810,10 @@ Matrix Matrix::operator / (Matrix & A)
        {
 
         C.Copy(*this);
-        B.inverseMat(A);
         C.multiply(B);
 
         return C;
         }
-
     }
 
     //Divide element by element

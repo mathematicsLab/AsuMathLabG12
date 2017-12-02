@@ -106,12 +106,15 @@ public: static Matrix subtract(Matrix a, Matrix b);
 
     void matTranspose(Matrix &A); //get the transpose of matrix
 
-    void inverseMat (Matrix &A); //Get inverse of the matrix
+    void inverseMat (Matrix A); //Get inverse of the matrix
+
+    void eye ();
+    bool isZeros();
 
    void multiply (Matrix &A); // Multiply Two matrices
 
     void Copy(Matrix& A);
-    Matrix operator / (Matrix & A);
+    Matrix operator / (Matrix& A);
 
 
   //*******************************************************************************************
