@@ -40,8 +40,9 @@ std::string trim(const std::string& str)
 
 void operation(string input )
 {
+	 size_t sa= input.find("sqrt");
         static map<string, Matrix> matMap; 
-
+		static map<string,Matrix>::iterator it;
         if(input[input.size()-1]==']' || input[input.size()-2]==']' ){
             //count number of rows $ col
         int numRow=1,numCol=1;
@@ -49,7 +50,7 @@ void operation(string input )
         for(int i=input.find('[');i<input.find(']')-1;i++){if(input[i]==';' && input[i+1]!=']' && input[i+2]!=']' && input[i+3]!=']' )numRow++;}
         double values[2000]; int valuesIndex=0; 
 
-      /*  if(input[input.size()-1]==';'){
+        /*if(input[input.size()-1]==';'){
             input=input.substr(0,input.find(']')+1);
         }*/
 //cout<<input<<endl;
@@ -67,7 +68,7 @@ void operation(string input )
         // parse matrix element
 
      //   int start=input.find('=')+2; int end=input.find(",",start+1); string s;
-     int start=input.find('[')+1; int end=input.find(",",start+2); string s;
+     int start=input.find('[')+1; int end=input.find(","); string s;
       // cout<<input<<endl;
         while(end<=input.size()){
          s=input.substr(start,end-start);   //cout<<s<<"--";
@@ -79,15 +80,25 @@ void operation(string input )
 
          
 
-       
+		
        string name=input.substr(0,1);
+	   it = matMap.find(name);
+	 
+	   /*if( it != matMap.end())
+	   {
+		   matMap.at(name).setValue(values);
+	   }*/
       // name=trim(name);
     //  cout<<name<<">>>>"<<numRow<<','<<numCol<<endl;
      //  Matrix A(numRow,numCol);
+	  // else
+	   if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
        matMap.insert(pair<string,Matrix>(name,Matrix(numRow,numCol)));
        matMap.at(name).setValue(values);
-
-      if(input[input.size()-1]!='?'){
+      if( input[input.size()-1] !=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
       }
@@ -102,11 +113,15 @@ void operation(string input )
          string name=input.substr(0,1);
         // name=trim(name);
          string matrix1,matrix2;
+		 /*
+		 char p[]= input; 
+			p = strstr(input,"sqrt");*/
+		int c;
+		// (p)?c=1:c=0;
 
-
-         
+         it = matMap.find(name);
          if(input.find('+')<input.size()){
-             name="C";
+    //         name="C";
              for(int i=input.find('=')+1;i<input.length();i++){
                  if(input[i]==' '){continue;}
                  else{ matrix1=input.substr(i,1);   break;}
@@ -119,7 +134,11 @@ void operation(string input )
             
         
         //  matrix2=input.substr(input.find('+')+1);    matrix2=trim(matrix2);    cout<<matrix2<<matrix2.length()<<endl;  
-         matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)+matMap.at(matrix2)));
+			  if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+			 matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)+matMap.at(matrix2)));
          //matMap.at(name).printMatrix();
          if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
@@ -128,11 +147,35 @@ void operation(string input )
           
       }
 
-
+		 if(sa<5000)
+		 {
+			 int sa2= sa+5;
+			 matrix1=input.substr(sa2,1);
+			 int col=matMap.at(matrix1).getCol(),row=matMap.at(matrix1).getRow();
+		Matrix bb(row,col);
+		for(int i =0;i<row;i++)
+		{
+			for(int j=0;j<col;j++)
+			{
+				bb.pData[i][j]=sqrt(matMap.at(matrix1).pData[i][j]);
+			}
+		}
+		 if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+		matMap.insert(pair<string,Matrix>(name,bb));
+		matMap.at(name).printMatrix();
+	}
+			 
 
       if(input.find('-')<input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find('-')-input.find('=')-1);   matrix1=trim(matrix1);
-         string matrix2=input.substr(input.find('-')+1);   matrix2=trim(matrix2);    
+         string matrix2=input.substr(input.find('-')+1);   matrix2=trim(matrix2);
+		  if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
          matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)-matMap.at(matrix2)));   
           if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
@@ -142,8 +185,12 @@ void operation(string input )
 
        if(input.find('*')<input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find('*')-input.find('=')-1);   matrix1=trim(matrix1); 
-         string matrix2=input.substr(input.find('*')+1);        matrix2=trim(matrix2); 
-         matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)*matMap.at(matrix2)));   
+        string matrix2=input.substr(input.find('*')+1);        matrix2=trim(matrix2); 
+         if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+		matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)*matMap.at(matrix2)));   
          if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
@@ -152,8 +199,12 @@ void operation(string input )
 
       if(input.find('/')<input.size() && input.find("./")>input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find('/')-input.find('=')-1);   matrix1=trim(matrix1);
-         string matrix2=input.substr(input.find('/')+1);          matrix2=trim(matrix2); 
-         matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)/matMap.at(matrix2)));   
+        string matrix2=input.substr(input.find('/')+1);          matrix2=trim(matrix2); 
+         if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+		matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)/matMap.at(matrix2)));   
           if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
@@ -218,37 +269,6 @@ void operation(string input )
 }
 }
 
-int main(int argc, char* argv[]){
-  
-       int x=0;
-        string s;
-    //create map for matrix
-       // map<string, Matrix> matMap;       
-
-    if(argc>1)
-    {
-        string input;   int c=0;   
-
-    ifstream inFile;
-    inFile.open(argv[1]);
-    if (!inFile) {
-    cout << "Unable to open file datafile.txt";
-   }
-   while ( inFile>>s && c<2) {
-       if(s.find("]")<100){ remove(s.c_str()); input=input+s;  operation(input); input=""; c++;  } //cout<<input<<endl;
-    
-       else{ remove(s.c_str()); input=input+s+" ";  }
-}
-
-while ( getline (inFile,input)) {
-
-// cout<<input<<endl;
-      operation(input);
-
-}
-
-    }
-}
 
 
 /*
