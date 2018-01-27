@@ -6,12 +6,185 @@
 #include"map"
 #include<string>
 #include<fstream>
+#include<stack>
 #include <algorithm> 
 //#include<sstream>
 //#include <cctype>
 //#include <locale>
 using namespace std;
-
+int getWeight(char ch) {
+   switch (ch) {
+   case '^': return 3;
+   case '/':
+      case '*': return 2;
+      case '+':
+      case '-': return 1;
+      default : return 0;
+   }
+}
+void infix2postfix(string infix,string  &postfix, int size) {
+   stack<char> s;
+   int weight;
+   int i = 0;
+   int k = 0;
+   char ch;
+  for(int ns=0;ns<size;ns++)
+   {
+	   ns=infix.find(' ');
+	   if(ns !=-1)
+	   {
+		   infix.erase(ns,1);
+	   }
+	   else
+		   break;
+   }
+  size=infix.size();   
+   while (i < size) {
+      ch = infix[i];
+      if (ch == '(') {
+         s.push(ch);
+         i++;
+         continue;
+      }
+      if (ch == ')') {
+         while (!s.empty() && s.top() != '(') {
+            postfix[k++] = s.top();
+            s.pop();
+			postfix[k++]=' ';
+         }
+         if (!s.empty()) {
+            s.pop();
+         }
+         i++;
+         continue;
+      }
+      weight = getWeight(ch);
+      if (weight == 0) {
+		  if(i==0)
+		  {
+			   postfix[k++] = ch;
+			 if( infix[i+1] == '-' || infix[i+1]=='*' || infix[i+1]=='/' || infix[i+1]=='+' || infix[i+1]=='^' || infix[i+1]==')')
+			 {postfix[k++] = ' ';}
+		  }
+		  else
+		  {
+         if(infix[i-1]=='-' || infix[i-1]=='*' || infix[i-1]=='/' || infix[i-1] =='+' || infix[i-1]=='^'/*&& infix[i+1] == '-' && infix[i+1]=='*' && infix[i+1]=='/' && infix[i+1]=='+' && infix[i+1]=='^'*/)
+		  {
+			  postfix[k++] = ch;
+			  if(infix[i+1] == ')' || infix[i+1] == '-' || infix[i+1]=='*' || infix[i+1]=='/' || infix[i+1]=='+' || infix[i+1]=='^'||infix[i+1]=='(')
+				  postfix[k++]=' ';
+		 }
+		 else
+		 {
+			 postfix[k++] = ch;
+			if( infix[i+1] == '-' || infix[i+1]=='*' || infix[i+1]=='/' || infix[i+1]=='+' || infix[i+1]=='^' || infix[i+1]==')'||infix[i+1]=='(')
+			 {postfix[k++] = ' ';}
+		 }
+		  }
+      }
+      else {
+         if (s.empty()) {
+            s.push(ch);
+         }
+         else {
+         
+            while (!s.empty() && s.top() != '(' &&
+                  weight <= getWeight(s.top())) {
+               postfix[k++] = s.top();
+               s.pop();
+			   postfix[k++] = ' ';
+            }
+            s.push(ch);
+         }
+      }
+      i++;
+   } 
+   if(postfix[k-1]!=' ')
+   {postfix[k++] =' ';}
+   while (!s.empty()) {
+      postfix[k++] = s.top();
+      s.pop();
+	  if(s.size()!=0)
+	  postfix[k++] =' ';
+   }
+   postfix[k] = 0;   
+}
+  float parsing(string postfix)
+  {
+	  stack<string> s;
+	  string st;
+	  int k=0;
+	  int i =0;
+	  int i2=0;
+	  int found=0;
+	  float op1,op2;
+	  float result;
+	  int ay1=0;
+	  for(int man=0;man<postfix.size();man++)
+	  {
+		  ay1=postfix.find(" ",ay1+1);
+		  if(ay1 != -1)
+			  i2++;
+		  else
+			  break;
+	  }
+	  while (i<i2+1)
+	  {
+		  found=postfix.find(" ",found+1);
+		  st=postfix.substr(k,found-k);
+		  k=found+1;
+		  if(st != "/" && st != "+" && st != "-" && st != "*" && st != "^" )
+		  {
+			  s.push(st);
+		  }
+		  else
+		  {
+			op2=stof(s.top());
+			s.pop();
+			 op1=stof(s.top());
+			s.pop();
+			if(st=="/")
+			{	
+				result=	op1/op2;
+				s.push(to_string(result));
+				i++;
+				continue;
+			}
+			if(st=="+")
+			{	
+				result=	op1+op2;
+				s.push(to_string(result));
+				i++;
+				continue;
+			}
+			if(st=="-")
+			{	
+				result=	op1-op2;
+				s.push(to_string(result));
+				i++;
+				continue;
+			}
+			if(st=="*")
+			{	
+				result=	op1*op2;
+				s.push(to_string(result));
+				i++;
+				continue;
+			}
+			if(st=="^")
+			{	
+				result=	pow(op1,op2);
+				s.push(to_string(result));
+				i++;
+				continue;
+			}
+	  }
+		 i++;
+	  }
+	   result=stof(s.top());
+		  s.pop();
+		  return result;
+  }
 std::string trim_left(const std::string& str)
 {
   const std::string pattern = " \f\n\r\t\v";
@@ -40,20 +213,20 @@ std::string trim(const std::string& str)
 
 void operation(string input )
 {
+        l1:
+	string randommatrix[]={"AA","BB","CC","GG"};
+static	int counterrandom=0;
+	input=trim(input);
+	 size_t sa= input.find("sqrt(");
         static map<string, Matrix> matMap; 
-
-        if(input[input.size()-1]==']' || input[input.size()-2]==']' ){
+		static map<string,Matrix>::iterator it;
+		if(input.find('[')!=-1 || input.find(']')!=-1)
+		{
             //count number of rows $ col
         int numRow=1,numCol=1;
         for(int i=input.find('[');i<((input.find(';')<input.size()?input.find(';'):input.find(']')));i++){if(input[i]==' ' && input[i-1]!='[' && input[i+1]!=';')numCol++;}
         for(int i=input.find('[');i<input.find(']')-1;i++){if(input[i]==';' && input[i+1]!=']' && input[i+2]!=']' && input[i+3]!=']' )numRow++;}
         double values[2000]; int valuesIndex=0; 
-
-      /*  if(input[input.size()-1]==';'){
-            input=input.substr(0,input.find(']')+1);
-        }*/
-//cout<<input<<endl;
-
          //replac space with commas
         for(int i=input.find('[')+1;i<input.find(']')+1;i++){
             if(input[i]==' ' || input[i]==';' || input[i]==']'  || input[i]=='[')
@@ -62,11 +235,8 @@ void operation(string input )
                 else {input[i]=',';}
                 }
         }
-        
-//cout<<input<<endl;
-        // parse matrix element
+		
 
-     //   int start=input.find('=')+2; int end=input.find(",",start+1); string s;
      int start=input.find('[')+1; int end=input.find(","); string s;
       // cout<<input<<endl;
         while(end<=input.size()){
@@ -79,34 +249,57 @@ void operation(string input )
 
          
 
-       
-       string name=input.substr(0,1);
-      // name=trim(name);
-    //  cout<<name<<">>>>"<<numRow<<','<<numCol<<endl;
-     //  Matrix A(numRow,numCol);
+		
+       string name;//=input.substr(0,1);
+	   for(int ia=0;ia<input.size();ia++)
+		 {
+			 if(input[ia+1]==' ')
+			 {
+				 name=input.substr(0,ia+1);
+				 break;
+			 }
+		 }
+	   it = matMap.find(name);
+	   if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
        matMap.insert(pair<string,Matrix>(name,Matrix(numRow,numCol)));
        matMap.at(name).setValue(values);
-
-      if(input[input.size()-1]!='?'){
+      if( input[input.size()-1] !=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
       }
-
-       // cout<<"-----"<<valuesIndex<<"------"<<endl;
         for(int i=0;i<valuesIndex;i++){
-        // cout<<values[i]<<endl;
         }
          }
-         
+
          else{
-         string name=input.substr(0,1);
-        // name=trim(name);
-         string matrix1,matrix2;
 
-
-         
+			 string name;//=input.substr(0,1);
+		 for(int ia=0;ia<name.size();ia++)
+		 {
+			 if(name[ia+1]==' ')
+			 {
+				 name=name.substr(0,ia+1);
+				 break;
+			 }
+		 }
+         string matrix1,matrix2,secondeInput;
+		 it =matMap.find(name);
+		 if( input.size()<5)
+		{
+		
+			if(it == matMap.end())
+	   {
+		   throw("The is no match matrix ") ;
+	   }
+			else 
+			matMap.at(name).printMatrix();
+		}
+		int c;
+         it = matMap.find(name);
          if(input.find('+')<input.size()){
-             name="C";
              for(int i=input.find('=')+1;i<input.length();i++){
                  if(input[i]==' '){continue;}
                  else{ matrix1=input.substr(i,1);   break;}
@@ -117,10 +310,12 @@ void operation(string input )
                  else{ matrix2=input.substr(i,1);       break; }
              }      
             
-        
-        //  matrix2=input.substr(input.find('+')+1);    matrix2=trim(matrix2);    cout<<matrix2<<matrix2.length()<<endl;  
-         matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)+matMap.at(matrix2)));
-         //matMap.at(name).printMatrix();
+          
+			  if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+			 matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)+matMap.at(matrix2)));
          if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
@@ -128,11 +323,34 @@ void operation(string input )
           
       }
 
-
+		 if(sa<5000)
+		 {
+			 int sa2= sa+5;
+			 matrix1=input.substr(sa2,1);
+			 int col=matMap.at(matrix1).getCol(),row=matMap.at(matrix1).getRow();
+		Matrix bb(row,col);
+		for(int i =0;i<row;i++)
+		{
+			for(int j=0;j<col;j++)
+			{
+				bb.pData[i][j]=sqrt(matMap.at(matrix1).pData[i][j]);
+			}
+		}
+		 matMap.insert(pair<string,Matrix>(randommatrix[counterrandom],bb));
+		// matMap.at(randommatrix[counterrandom]).printMatrix();
+		 input.replace(sa,sa2+2,randommatrix[counterrandom]);
+		 counterrandom++;
+		 goto l1;
+	}
+			 
 
       if(input.find('-')<input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find('-')-input.find('=')-1);   matrix1=trim(matrix1);
-         string matrix2=input.substr(input.find('-')+1);   matrix2=trim(matrix2);    
+         string matrix2=input.substr(input.find('-')+1);   matrix2=trim(matrix2);
+		  if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
          matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)-matMap.at(matrix2)));   
           if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
@@ -142,8 +360,12 @@ void operation(string input )
 
        if(input.find('*')<input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find('*')-input.find('=')-1);   matrix1=trim(matrix1); 
-         string matrix2=input.substr(input.find('*')+1);        matrix2=trim(matrix2); 
-         matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)*matMap.at(matrix2)));   
+        string matrix2=input.substr(input.find('*')+1);        matrix2=trim(matrix2); 
+         if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+		matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)*matMap.at(matrix2)));   
          if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
@@ -152,15 +374,27 @@ void operation(string input )
 
       if(input.find('/')<input.size() && input.find("./")>input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find('/')-input.find('=')-1);   matrix1=trim(matrix1);
-         string matrix2=input.substr(input.find('/')+1);          matrix2=trim(matrix2); 
-         matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)/matMap.at(matrix2)));   
+        string matrix2=input.substr(input.find('/')+1);          matrix2=trim(matrix2); 
+         if(it != matMap.end())
+	   {
+		   matMap.erase(it);
+	   }
+		matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)/matMap.at(matrix2)));   
           if(input[input.size()-1]!=';'){
            cout<<name<<'='<<endl;
        matMap.at(name).printMatrix();
        }
       }
 
-
+	  if(input.find("=")!=-1 && input.find("[") == -1 && input.find("+") == -1 && input.find("-") == -1 && input.find("*") == -1 && input.find("/") == -1 )
+		{
+			matrix1=input.substr(0,1);
+			matrix2=input.substr(input.find("=")+2,input.size()-input.find("="));
+			matMap.erase(matrix1);
+			matMap.insert(pair<string,Matrix>(matrix1,matMap.at(matrix2)));
+			cout<<matrix1<<'='<<endl;
+			matMap.at(matrix1).printMatrix();
+		}
       if(input.find("./")<input.size()){
          string matrix1=input.substr(input.find('=')+1,input.find("./")-input.find('=')-1);  // matrix1=trim(matrix1);
          string matrix2=input.substr(input.find("./")+2);          matrix2=trim(matrix2); 
