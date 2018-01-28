@@ -33,6 +33,8 @@ class Matrix
         void N_A_N ();
             Matrix elementDivision (Matrix &A);
             Matrix elementDivision (double A);
+            Matrix elementPower (int A);
+            Matrix elementDPower (double A);
 
 
 
@@ -73,6 +75,11 @@ public: static Matrix subtract(Matrix a, Matrix b);
   // divide by double value
   Matrix Divide( double v);
   Matrix transpose(Matrix A);
+  //power members//
+ public :Matrix getpower (Matrix s,int A);
+ // get (double)(fractional) power for 1x1 matrix
+ public :Matrix getDpower (Matrix s , double a);
+
 
   // division of Matrix with Matrix
  /* Matrix Divide ( Matrix a, Matrix b)
@@ -115,6 +122,7 @@ public: static Matrix subtract(Matrix a, Matrix b);
 
     void Copy(Matrix& A);
     Matrix operator / (Matrix& A);
+      public :void printMF(Matrix s);
 
 
   //*******************************************************************************************
@@ -139,4 +147,8 @@ public: Matrix Transpose(Matrix A); //get the transpose of matrix
  /* Matrix operator/(Matrix b){
       return Divide(*this,b);
   } */
+    public : Matrix operator *=( Matrix b);
+  public : Matrix operator^ (int mad);
+  public : Matrix operator^ (double mad);
+
 };
