@@ -213,9 +213,9 @@ std::string trim(const std::string& str)
 
 void operation(string input )
 {
-        l1:
+	l1:
 	string randommatrix[]={"AA","BB","CC","GG"};
-static	int counterrandom=0;
+	int counterrandom=0;
 	input=trim(input);
 	 size_t sa= input.find("sqrt(");
         static map<string, Matrix> matMap; 
@@ -250,14 +250,16 @@ static	int counterrandom=0;
          
 
 		
-       string name;//=input.substr(0,1);
-	   for(int ia=0;ia<input.size();ia++)
+        string name;
+			 input+=" ";
+			 for(int ia=0;ia<input.size()+1;ia++)
 		 {
 			 if(input[ia+1]==' ')
 			 {
 				 name=input.substr(0,ia+1);
 				 break;
 			 }
+
 		 }
 	   it = matMap.find(name);
 	   if(it != matMap.end())
@@ -276,14 +278,16 @@ static	int counterrandom=0;
 
          else{
 
-			 string name;//=input.substr(0,1);
-		 for(int ia=0;ia<name.size();ia++)
+			 string name;
+			 input+=" ";
+			 for(int ia=0;ia<input.size()+1;ia++)
 		 {
-			 if(name[ia+1]==' ')
+			 if(input[ia+1]==' '||input[ia+1]=='=')
 			 {
-				 name=name.substr(0,ia+1);
+				 name=input.substr(0,ia+1);
 				 break;
 			 }
+
 		 }
          string matrix1,matrix2,secondeInput;
 		 it =matMap.find(name);
@@ -292,7 +296,8 @@ static	int counterrandom=0;
 		
 			if(it == matMap.end())
 	   {
-		   throw("The is no match matrix ") ;
+		  throw("The is no match matrix ") ;
+		   
 	   }
 			else 
 			matMap.at(name).printMatrix();
@@ -388,8 +393,18 @@ static	int counterrandom=0;
 
 	  if(input.find("=")!=-1 && input.find("[") == -1 && input.find("+") == -1 && input.find("-") == -1 && input.find("*") == -1 && input.find("/") == -1 )
 		{
+			for(int ns=0;ns<input.size();ns++)
+   {
+	   ns=input.find(' ');
+	   if(ns !=-1)
+	   {
+		   input.erase(ns,1);
+	   }
+	   else
+		   break;
+   }
 			matrix1=input.substr(0,1);
-			matrix2=input.substr(input.find("=")+2,input.size()-input.find("="));
+			matrix2=input.substr(input.find("=")+1,input.size()-input.find("="));
 			matMap.erase(matrix1);
 			matMap.insert(pair<string,Matrix>(matrix1,matMap.at(matrix2)));
 			cout<<matrix1<<'='<<endl;
@@ -451,7 +466,6 @@ static	int counterrandom=0;
          }  
 }
 }
-
 int main(int argc, char* argv[]){
   
        int x=0;
