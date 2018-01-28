@@ -11,6 +11,8 @@ class Matrix
 
     // constructor
     public : Matrix(int row,int col);
+
+    public : Matrix(std::string s);
    /*  ~Matrix()
     {
         for (int i=0;i<nCol;i++)
@@ -34,9 +36,9 @@ class Matrix
             Matrix elementDivision (Matrix &A);
             Matrix elementDivision (double A);
 
-
-
-
+    public:void horzcat(Matrix& A,Matrix& B);
+   public:void reset();
+   public:std::string toString();
 
 
 

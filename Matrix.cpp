@@ -50,6 +50,114 @@ public:
         }       
 
     }
+
+    Matrix::Matrix(string s)
+    {
+        char str[s.size()+1];
+        strcpy(str,s.c_str());
+        char*token;
+        int nR=0,nC=0;
+        token=strtok(str,"[,;,]");
+        while(token)
+        {
+            nR++;
+            token=strtok(NULL,"[,;,]");
+        }
+        int start=s.find("[")+1;
+        int End=s.find(";");
+        string Col=s.substr(start,End-start);
+        char colstring[Col.size()+1];
+        strcpy(colstring,Col.c_str());
+        token=strtok(colstring," ");
+        while (token)
+        {
+            nC++;
+            token=strtok(NULL," ");
+        }
+        nRow=nR;
+        nCol=nC;
+        pData=new double*[nRow];
+        for(int i=0;i<nRow;i++)
+            pData[i]=new double[nCol];
+        strcpy(str,s.c_str());
+        double values[nR*nC];
+        int index=0;
+        token=strtok(str," ,[,],;");
+        while (token)
+        {
+            values[index]=atof(token);
+            index++;
+            token=strtok(NULL," ,[,],;");
+        }
+        int k=0;
+        for (int i=0;i<nRow;i++)
+        {
+            for(int j=0;j<nCol;j++)
+            {
+                pData[i][j]=values[k];
+                k++;
+            }
+        }
+    }
+
+    void Matrix::horzcat(Matrix& A,Matrix& B)
+    {
+              if (pData)
+       {
+           for (int i=0;i<nRow;i++)
+            delete[] pData[i];
+           delete[] pData;
+       }
+       nRow=0;
+       nCol=0;
+       pData=NULL;
+        double temp,temp2;
+        if(A.nRow != B.nRow)
+            throw Exception("InValid Matrix dimension");
+
+        nRow=A.nRow;
+        nCol=A.nCol+B.nCol;
+        pData=new double*[nRow];
+        for(int i=0;i<nRow;i++)
+            pData[i]=new double [nCol];
+        for(int i=0;i<nRow;i++)
+        {
+            int k=0;
+            for(int j=0;j<nCol;j++)
+                {
+
+                    if(j<A.nCol)
+                    {
+                        pData[i][j]=A.pData[i][j];
+                    }
+                    else
+                    {
+                        pData[i][j]=B.pData[i][k];
+                        k++;
+                    }
+                }
+        }
+
+    }
+
+        string Matrix::toString(void)
+    {
+        string mat="";
+        for(int i=0;i<nRow;i++)
+        {
+            for(int j=0;j<nCol;j++)
+            {
+                mat+=to_string(pData[i][j]);
+                if(j!=nCol-1)
+                    mat+=" ";
+            }
+            if(i!=nRow-1)
+                mat+=";";
+        }
+        mat+="";
+        return mat;
+    }
+
    /*  ~Matrix()
     {
         for (int i=0;i<nCol;i++)
@@ -68,6 +176,20 @@ public:
                 i++;
             }
         }
+    }
+
+
+   void Matrix:: reset()
+    {
+       if (pData)
+       {
+           for (int i=0;i<nRow;i++)
+            delete[] pData[i];
+           delete[] pData;
+       }
+       nRow=0;
+       nCol=0;
+       pData=NULL;
     }
 
     //Getters
