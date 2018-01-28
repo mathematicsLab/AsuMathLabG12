@@ -892,10 +892,27 @@ Matrix Matrix::operator / (Matrix &A)
             return B;
     }
     // expected algorithm to optimize multiply of power 
-    /*Matrix Matrix::strassenMultiply (Matrix &A)
-    {
-        
-    }*/
+       Matrix Matrix::logAlgorithm(Matrix m,int A){
+            Matrix t(m.nRow,m.nCol); t.eye();
+            Matrix getback(m.nRow,m.nCol); getback.eye();
+            getback.multiply(m);
+            if(A%2){
+                     t.multiply(m);//printMF(t);
+                     A=A-1;
+            }
+            while(A > 0){
+                      Matrix n = m;//printMF(n);
+                      double f_log = double(int(log2(A)));
+                      for(int i =0;i <f_log;i++){
+                            n.multiply(n);// there are a problem here that the main matrix elements changes and solved by getback .
+                      }
+                      t.multiply(n);
+                      A =A - pow(2,f_log);
+            }
+            m.Copy(getback);//printMF(m);
+            return t;
+      }
+
     //test function to monitor matrix from the function
     void Matrix :: printMF(Matrix s)
     {
@@ -1019,6 +1036,6 @@ Matrix Matrix::operator / (Matrix &A)
   }
   Matrix Matrix::operator ^(int mad)
   {
-    return getpower(*this,mad); 
+    return logAlgorithm(*this,mad); 
   }
 
