@@ -848,6 +848,93 @@ Matrix Matrix::operator / (Matrix &A)
             }
             return B;
     }
+////////////////////////////////////////////////////////////////////////////////
+    ////////power zone/////////////
+
+
+    //get int power of matrix elements 
+    Matrix Matrix::elementPower (int A)
+    {
+       Matrix B(nRow,nCol);//printf("in ele pow\n");
+            for (int r=0;r<nRow;r++)
+            {
+                for (int c=0;c<nCol;c++)
+                {
+                  double element_term=1;
+
+                    for (int i = 0; i < A; i++)
+                    {
+                      B.pData[r][c]=pData[r][c]*element_term;
+                      element_term=B.pData[r][c];
+                    }
+                }
+            }
+            return B;
+    }
+    //get double power of matrix elements 
+    Matrix Matrix::elementDPower (double A)
+    {
+            Matrix B(nRow,nCol);//printf("in ele d pow\n");
+            for (int r=0;r<nRow;r++)
+            {
+                for (int c=0;c<nCol;c++)
+                {
+                  double element_term=1.0;double frac_term=1.0;
+
+                    for (int i = 0; i < int(A); i++)
+                    {
+                      B.pData[r][c]=pData[r][c]*element_term;
+                      element_term=B.pData[r][c];
+                    }
+                    B.pData[r][c]=element_term*pow((pData[r][c]),A-double(int(A)));
+                }
+            }
+            return B;
+    }
+    // expected algorithm to optimize multiply of power 
+    /*Matrix Matrix::strassenMultiply (Matrix &A)
+    {
+        
+    }*/
+    //test function to monitor matrix from the function
+    void Matrix :: printMF(Matrix s)
+    {
+      for (int i = 0; i < s.nRow; i++)
+      {
+        for (int j = 0; j < s.nCol; j++)
+        {
+          printf("%f ",s.pData[i][j]);
+        }
+        printf("\n");
+      }
+    }
+    //get int power of nxn matrix (without optimization)
+    Matrix Matrix::getpower (Matrix s,int A)
+    {
+           Matrix k (s.nRow,s.nCol);k.eye();
+
+           for (int i = 0; i < A; i++) 
+             {
+                k.multiply(s);
+             }
+             return k;
+    }
+    //get double power of 1x1 matrix
+    Matrix Matrix::getDpower (Matrix s,double A)
+    {
+      //printf("in double pow and A = %f\n",A );
+      double single_element = this -> pData[0][0];
+       double element_term=1.0;
+
+                    for (int i = 0; i < int(A); i++)
+                    {
+                      element_term*=single_element;
+                    }
+                    single_element=element_term*pow(single_element,A-double(int(A)));
+
+      Matrix B(1,1) ; B.pData[0][0]=single_element;
+      return B;
+    }
 
     
    
@@ -924,4 +1011,14 @@ Matrix Matrix::operator / (Matrix &A)
  /* Matrix operator/(Matrix b){
       return Divide(*this,b);
   } */
+  //power operators of matrix 
+  Matrix Matrix::operator ^(double mad)
+  {
+    return getDpower(*this,mad);
+
+  }
+  Matrix Matrix::operator ^(int mad)
+  {
+    return getpower(*this,mad); 
+  }
 
