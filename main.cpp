@@ -194,7 +194,7 @@ void operation(string input )
           { 
             
               el_doss=atof(matrix2.c_str());//printf("%f is el d oss\n",el_doss);
-              matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1).elementDPower(el_doss)));
+              matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)^el_doss));
           }
           else 
               {
