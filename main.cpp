@@ -190,11 +190,10 @@ void operation(string input )
          string matrix1=input.substr(input.find('=')+1,input.find('^')-input.find('=')-1);   matrix1=trim(matrix1);
           string matrix2=input.substr(input.find('^')+1);    matrix2=trim(matrix2);
           int el_oss =atoi(matrix2.c_str()); double el_doss=atof(matrix2.c_str());
-          printf("%d %f %s \n",matrix1.size(),el_doss,matrix1);
           if(el_doss-double(el_oss)>0.0)
           { 
             
-              el_doss=atof(matrix2.c_str());printf("%f is el d oss\n",el_doss);
+              el_doss=atof(matrix2.c_str());//printf("%f is el d oss\n",el_doss);
               matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1).elementDPower(el_doss)));
           }
           else 
