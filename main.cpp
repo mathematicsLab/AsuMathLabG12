@@ -12,6 +12,21 @@
 //#include <cctype>
 //#include <locale>
 using namespace std;
+bool isAlphabetic(string check,int i)
+{
+	bool verify = true;
+	for ( i ; i < check.length(); i++)
+	{
+		if (check[i] >= 'a' && check[i] <= 'z' || check[i] >= 'A' && check[i] <= 'Z')
+		{verify = true;break;}
+		else
+		{
+			verify = false;
+			
+		}
+	}
+	return verify;
+}
 int getWeight(char ch) {
    switch (ch) {
    case '^': return 3;
@@ -111,6 +126,9 @@ void infix2postfix(string infix,string  &postfix, int size) {
 }
   float parsing(string postfix)
   {
+	   int osa=postfix.find('\0');
+   postfix.erase(osa);
+	  //postfix=infix2postfix(postfix);
 	  stack<string> s;
 	  string st;
 	  int k=0;
@@ -133,11 +151,7 @@ void infix2postfix(string infix,string  &postfix, int size) {
 		  found=postfix.find(" ",found+1);
 		  st=postfix.substr(k,found-k);
 		  k=found+1;
-		  if(st != "/" && st != "+" && st != "-" && st != "*" && st != "^" )
-		  {
-			  s.push(st);
-		  }
-		  else
+		  if(st == "/" || st == "+" || st == "-" || st == "*" || st == "^" )
 		  {
 			op2=stof(s.top());
 			s.pop();
@@ -179,6 +193,10 @@ void infix2postfix(string infix,string  &postfix, int size) {
 				continue;
 			}
 	  }
+		  else
+		  {
+			  s.push(st);
+		  }
 		 i++;
 	  }
 	   result=stof(s.top());
@@ -212,14 +230,18 @@ std::string trim(const std::string& str)
 
 
 void operation(string input )
+
 {
 	l1:
 	string randommatrix[]={"AA","BB","CC","GG"};
+	int foundeq=input.find("=");
 	int counterrandom=0;
 	input=trim(input);
 	 size_t sa= input.find("sqrt(");
         static map<string, Matrix> matMap; 
 		static map<string,Matrix>::iterator it;
+		static map<string,float> numbermap;
+		bool is =isAlphabetic(input,foundeq);
 		if(input.find('[')!=-1 || input.find(']')!=-1)
 		{
             //count number of rows $ col
@@ -304,7 +326,7 @@ void operation(string input )
 		}
 		int c;
          it = matMap.find(name);
-         if(input.find('+')<input.size()){
+		 if(input.find('+')<input.size() && is){
              for(int i=input.find('=')+1;i<input.length();i++){
                  if(input[i]==' '){continue;}
                  else{ matrix1=input.substr(i,1);   break;}
@@ -327,12 +349,14 @@ void operation(string input )
        }   
           
       }
-
+	  
 		 if(sa<5000)
 		 {
 			 int sa2= sa+5;
 			 matrix1=input.substr(sa2,1);
-			 int col=matMap.at(matrix1).getCol(),row=matMap.at(matrix1).getRow();
+			 it = matMap.find(matrix1);
+			if( it != matMap.end())
+			{ int col=matMap.at(matrix1).getCol(),row=matMap.at(matrix1).getRow();
 		Matrix bb(row,col);
 		for(int i =0;i<row;i++)
 		{
@@ -346,10 +370,13 @@ void operation(string input )
 		 input.replace(sa,sa2+2,randommatrix[counterrandom]);
 		 counterrandom++;
 		 goto l1;
+			}
+			else
+				throw("no such matrix ");
 	}
 			 
 
-      if(input.find('-')<input.size()){
+		 if(input.find('-')<input.size()&&is){
          string matrix1=input.substr(input.find('=')+1,input.find('-')-input.find('=')-1);   matrix1=trim(matrix1);
          string matrix2=input.substr(input.find('-')+1);   matrix2=trim(matrix2);
 		  if(it != matMap.end())
@@ -363,7 +390,7 @@ void operation(string input )
        }
       }
 
-       if(input.find('*')<input.size()){
+		 if(input.find('*')<input.size()&&is){
          string matrix1=input.substr(input.find('=')+1,input.find('*')-input.find('=')-1);   matrix1=trim(matrix1); 
         string matrix2=input.substr(input.find('*')+1);        matrix2=trim(matrix2); 
          if(it != matMap.end())
@@ -376,8 +403,26 @@ void operation(string input )
        matMap.at(name).printMatrix();
        }
       }
-
-      if(input.find('/')<input.size() && input.find("./")>input.size()){
+	   if(!is)
+	   {
+		   string label;
+		   int xaa=input.find("=");
+		   for(int aac=0;aac<xaa+1;aac++)
+		   {
+			   if(input[aac+1]== ' ')
+			   {
+				   label=input.substr(0,aac+1);
+				   break;
+			   }
+		   }
+		   string postfix= new char [input.size()*4];
+		   infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,input.size());
+		   float resultts=parsing(postfix);
+		   numbermap.insert(pair<string,float>(label,resultts));
+		   cout<<label<<" ="<<endl;
+		   cout<<resultts<<endl;
+	   }
+	   if(input.find('/')<input.size() && input.find("./")>input.size()&&is){
          string matrix1=input.substr(input.find('=')+1,input.find('/')-input.find('=')-1);   matrix1=trim(matrix1);
         string matrix2=input.substr(input.find('/')+1);          matrix2=trim(matrix2); 
          if(it != matMap.end())
@@ -390,8 +435,8 @@ void operation(string input )
        matMap.at(name).printMatrix();
        }
       }
-
-	  if(input.find("=")!=-1 && input.find("[") == -1 && input.find("+") == -1 && input.find("-") == -1 && input.find("*") == -1 && input.find("/") == -1 )
+	  
+	  if(input.find("=")!=-1 && input.find("[") == -1 && input.find("+") == -1 &&is&& input.find("-") == -1 && input.find("*") == -1 && input.find("/") == -1 )
 		{
 			for(int ns=0;ns<input.size();ns++)
    {
@@ -407,10 +452,12 @@ void operation(string input )
 			matrix2=input.substr(input.find("=")+1,input.size()-input.find("="));
 			matMap.erase(matrix1);
 			matMap.insert(pair<string,Matrix>(matrix1,matMap.at(matrix2)));
+			 if(input[input.size()-1]!=';'){
 			cout<<matrix1<<'='<<endl;
-			matMap.at(matrix1).printMatrix();
+			matMap.at(matrix1).printMatrix();}
 		}
-      if(input.find("./")<input.size()){
+
+      if(input.find("./")<input.size()&&is){
          string matrix1=input.substr(input.find('=')+1,input.find("./")-input.find('=')-1);  // matrix1=trim(matrix1);
          string matrix2=input.substr(input.find("./")+2);          matrix2=trim(matrix2); 
 
@@ -438,7 +485,7 @@ void operation(string input )
 
 
 
-      if(input[input.size()-1]=='\''){
+      if(input[input.size()-1]=='\''&&is){
          
 
              for(int i=input.find('=')+1;i<input.length();i++){
