@@ -77,6 +77,7 @@ public: static Matrix subtract(Matrix a, Matrix b);
   Matrix transpose(Matrix A);
   //power members//
  public :Matrix getpower (Matrix s,int A);
+ public :Matrix logAlgorithm(Matrix m,int A);//optimized power
  // get (double)(fractional) power for 1x1 matrix
  public :Matrix getDpower (Matrix s , double a);
 
