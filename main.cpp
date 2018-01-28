@@ -185,6 +185,48 @@ void operation(string input )
        
        
       }
+      if(input.find('^')<input.size() && input.find(".^")>input.size()){
+        //printf("begin pow\n");
+         string matrix1=input.substr(input.find('=')+1,input.find('^')-input.find('=')-1);   matrix1=trim(matrix1);
+          string matrix2=input.substr(input.find('^')+1);    matrix2=trim(matrix2);
+          int el_oss =atoi(matrix2.c_str()); double el_doss=atof(matrix2.c_str());
+          printf("%d %f %s \n",matrix1.size(),el_doss,matrix1);
+          if(el_doss-double(el_oss)>0.0)
+          { 
+            
+              el_doss=atof(matrix2.c_str());printf("%f is el d oss\n",el_doss);
+              matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1).elementDPower(el_doss)));
+          }
+          else 
+              {
+                el_oss=atoi(matrix2.c_str()); 
+                  matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1)^el_oss));
+              }   
+          if(input[input.size()-1]!=';'){
+           cout<<name<<'='<<endl;
+       matMap.at(name).printMatrix();
+       }
+      }
+      if(input.find(".^")<input.size()){
+         string matrix1=input.substr(input.find('=')+1,input.find(".^")-input.find('=')-1);   matrix1=trim(matrix1);
+         string matrix2=input.substr(input.find(".^")+2);          matrix2=trim(matrix2); 
+
+          double x1=atof(matrix2.c_str());int x2 =atoi(matrix2.c_str());
+          if(x1-double(x2)>0.0)
+          {
+              x1=atof(matrix2.c_str());
+              matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1).elementDPower(x1))); 
+          }
+          else
+          {
+              x2=atoi(matrix2.c_str());
+              matMap.insert(pair<string,Matrix>(name,matMap.at(matrix1).elementPower(x2)));   
+          }
+          if(input[input.size()-1]!=';'){
+           cout<<name<<'='<<endl;
+       matMap.at(name).printMatrix();
+          }   
+      }
 
 
 
