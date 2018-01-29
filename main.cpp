@@ -586,7 +586,7 @@ void operation(string input )
 			else
 				throw("no such matrix ");
 	}
-		 if(is)
+		 if(is&&input.size()>5)
 	   {
 		   string label;
 		   int xaa=input.find("=");
@@ -603,6 +603,7 @@ void operation(string input )
 		  // float resultts=parsing(postfix);
 		   Matrix resultsaaq=parsing2(postfix,matMap,numbermap);//test
 		  // numbermap.insert(pair<string,float>(label,resultts));
+		   matMap.insert(pair<string,Matrix>(label,resultsaaq));
 		   cout<<label<<" ="<<endl;
 		   resultsaaq.printMatrix();
 		   //cout<<resultts<<endl;
