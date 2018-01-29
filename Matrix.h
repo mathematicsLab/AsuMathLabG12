@@ -139,4 +139,9 @@ public: Matrix Transpose(Matrix A); //get the transpose of matrix
  /* Matrix operator/(Matrix b){
       return Divide(*this,b);
   } */
+
+public: static Matrix sin(Matrix m);
+public: static Matrix cos(Matrix m);
+public: static Matrix tan(Matrix m);
+
 };
