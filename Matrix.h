@@ -109,7 +109,7 @@ public: static Matrix subtract(Matrix a, Matrix b);
     void inverseMat (Matrix &A); //Get inverse of the matrix
 
    void multiply (Matrix &A); // Multiply Two matrices
-
+    void copy(Matrix& A);
     void Copy(Matrix& A);
     Matrix operator / (Matrix & A);
 
