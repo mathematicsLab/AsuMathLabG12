@@ -575,6 +575,15 @@ void infix2postfix(string infix,string  &postfix, int size) {
 
 void operation(string input )
 {
+        if (input.find('./'))
+        {
+          input.replace(input.find('./'),2,'');
+     
+        }
+        if(input.find('.^'))
+        {
+          input.replace(input.find('.^'),2,'!');
+        }
 
         static map<string, Matrix> matMap; 
         //cout<<input<<endl;
