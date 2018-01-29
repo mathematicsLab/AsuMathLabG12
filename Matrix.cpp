@@ -5,6 +5,7 @@
 #include"string.h"
 #include"map"
 #include<string>
+#include <stack>
 #include<math.h>
 //#include<fstream>
 #include <algorithm> 
@@ -73,7 +74,17 @@ public:
     //Getters
      // index operator. 
   
-
+void Matrix::copy(Matrix& m)
+{
+this->nRow = m.nRow;
+this->nCol = m.nCol;
+if((nRow*nCol)==0)
+{pData=NULL; return;}
+pData = new double*[nRow];
+for(int iR=0;iR<nRow;iR++)
+{pData[iR] = new double[nCol];
+for(int iC=0;iC<nCol;iC++)
+{pData[iR][iC] = m.pData[iR][iC];}}}
    
    double& Matrix::operator()(const int r, const int c)
   {
@@ -736,21 +747,8 @@ Matrix Matrix::operator / (Matrix & A)
     return C;
 }
  Matrix Matrix::operator =(Matrix a){
-    Matrix t;
-     t.nRow = a.nRow;
-    t.nCol = a.nCol;
-    t.pData = new double*[a.nRow];
-    for (int r = 0; r < a.nRow; r++)
-    {
-      t.pData[r] = new double[a.nCol];
-
-      // copy the values from the matrix a
-      for (int c = 0; c < a.nCol; c++)
-      {
-        t.pData[r][c] = a.pData[r][c];
-      }
-    }
-    return t;
+    copy(a);
+   return *this;
 }
  Matrix Matrix:: Transpose(Matrix A) //get the transpose of matrix
     {
