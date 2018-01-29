@@ -925,3 +925,32 @@ Matrix Matrix::operator / (Matrix &A)
       return Divide(*this,b);
   } */
 
+  Matrix Matrix::sin(Matrix m){
+	 Matrix temp(m.nRow,m.nCol);
+	 for(int i=0; i<m.nRow; i++){
+			 for(int j=0; j<m.nCol; j++){
+				  temp.pData[i][j]=std::sin(m.pData[i][j]);
+			 }
+	 }
+	 return temp;
+}
+
+  Matrix Matrix::cos(Matrix m){
+	 Matrix temp(m.nRow,m.nCol);
+	 for(int i=0; i<m.nRow; i++){
+			 for(int j=0; j<m.nCol; j++){
+				  temp.pData[i][j]=std::cos(m.pData[i][j]);
+			 }
+	 }
+	 return temp;
+}
+
+  Matrix Matrix::tan(Matrix m){
+	 Matrix temp(m.nRow,m.nCol);
+	 for(int i=0; i<m.nRow; i++){
+			 for(int j=0; j<m.nCol; j++){
+				  temp.pData[i][j]=std::tan(m.pData[i][j]);
+			 }
+	 }
+	 return temp;
+}
