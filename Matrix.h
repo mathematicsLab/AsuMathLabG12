@@ -164,5 +164,6 @@ public: Matrix Transpose(Matrix A); //get the transpose of matrix
   public : Matrix operator^ (double mad);
   public : Matrix operator!(int mad);
   public : Matrix operator!(double mad);
+  public : Matrix operator&(double A);
 
 };
