@@ -66,9 +66,9 @@ void infix2postfix(string infix,string  &postfix, int size) {
       }
       if (ch == ')') {
          while (!s.empty() && s.top() != '(') {
-            postfix[k++] = s.top();
+            postfix+= s.top();
             s.pop();
-			postfix[k++]=' ';
+			postfix+=' ';
          }
          if (!s.empty()) {
             s.pop();
@@ -80,23 +80,23 @@ void infix2postfix(string infix,string  &postfix, int size) {
       if (weight == 0) {
 		  if(i==0)
 		  {
-			   postfix[k++] = ch;
+			   postfix+= ch;
 			 if( infix[i+1] == '-' || infix[i+1]=='*' || infix[i+1]=='/' || infix[i+1]=='+' || infix[i+1]=='^' || infix[i+1]==')')
-			 {postfix[k++] = ' ';}
+			 {postfix+= ' ';}
 		  }
 		  else
 		  {
          if(infix[i-1]=='-' || infix[i-1]=='*' || infix[i-1]=='/' || infix[i-1] =='+' || infix[i-1]=='^'/*&& infix[i+1] == '-' && infix[i+1]=='*' && infix[i+1]=='/' && infix[i+1]=='+' && infix[i+1]=='^'*/)
 		  {
-			  postfix[k++] = ch;
+			  postfix+= ch;
 			  if(infix[i+1] == ')' || infix[i+1] == '-' || infix[i+1]=='*' || infix[i+1]=='/' || infix[i+1]=='+' || infix[i+1]=='^'||infix[i+1]=='(')
-				  postfix[k++]=' ';
+				  postfix+=' ';
 		 }
 		 else
 		 {
-			 postfix[k++] = ch;
+			 postfix+= ch;
 			if( infix[i+1] == '-' || infix[i+1]=='*' || infix[i+1]=='/' || infix[i+1]=='+' || infix[i+1]=='^' || infix[i+1]==')'||infix[i+1]=='(')
-			 {postfix[k++] = ' ';}
+			 {postfix+= ' ';}
 		 }
 		  }
       }
@@ -108,29 +108,29 @@ void infix2postfix(string infix,string  &postfix, int size) {
          
             while (!s.empty() && s.top() != '(' &&
                   weight <= getWeight(s.top())) {
-               postfix[k++] = s.top();
+               postfix+= s.top();
                s.pop();
-			   postfix[k++] = ' ';
+			   postfix+= ' ';
             }
             s.push(ch);
          }
       }
       i++;
    } 
-   if(postfix[k-1]!=' ')
-   {postfix[k++] =' ';}
+   if(postfix[postfix.size()-1]!=' ')
+   {postfix+=' ';}
    while (!s.empty()) {
-      postfix[k++] = s.top();
+      postfix+= s.top();
       s.pop();
 	  if(s.size()!=0)
-	  postfix[k++] =' ';
+	  postfix+=' ';
    }
-   postfix[k] = 0;   
+   //postfix[k] = 0;   
 }
   float parsing(string postfix)
   {
-	   int osa=postfix.find('\0');
-   postfix.erase(osa);
+	 //  int osa=postfix.find('\0');
+   //postfix.erase(osa);
    if(postfix[postfix.size()]==' ')
 	   postfix.erase(postfix.size());
 	  //postfix=infix2postfix(postfix);
@@ -219,8 +219,8 @@ void infix2postfix(string infix,string  &postfix, int size) {
 	int  counterra=0;
 	  map<string,Matrix>::iterator it;
 	  map<string,float>::iterator it2;
-	   int osa=postfix.find('\0');
-   postfix.erase(osa);
+	//   int osa=postfix.find('\0');
+   //postfix.erase(osa);
 	  //postfix=infix2postfix(postfix);
 	  stack<string> s;
 	  string st;
@@ -452,6 +452,15 @@ void infix2postfix(string infix,string  &postfix, int size) {
 				s.push(to_string(result2));
 				i++;
 				continue;
+				}
+				if(flag1==0&&flag2==0&&flag3==0&&flag4==1)
+				{
+					result = op4 ^ op2;
+					matMap.insert(pair<string,Matrix>(randomarray[counterra],result));
+					s.push(randomarray[counterra]);
+					i++;
+					counterra++;
+					continue;
 				}
 			}
 			  }
@@ -731,8 +740,8 @@ void operation(string input )
 				   break;
 			   }
 		   }
-		   string postfix= new char [input.size()*4];
-		   infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,input.size());
+		  string postfix;//= new char [input.size()*4];
+		   infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,(input.substr(xaa+1,input.size()-xaa)).size());
 		  // float resultts=parsing(postfix);
 		   Matrix resultsaaq=parsing2(postfix,matMap,numbermap);//test
 		  // numbermap.insert(pair<string,float>(label,resultts));
@@ -760,8 +769,8 @@ void operation(string input )
 				   break;
 			   }
 		   }
-		   string postfix= new char [input.size()*4];
-		   infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,input.size());
+		   string postfix;//= new char [input.size()*4];
+		   infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,(input.substr(xaa+1,input.size()-xaa)).size());
 		   float resultts=parsing(postfix);
 		   //Matrix resultsaaq=parsing2(postfix,matMap,numbermap);//test
 		   numbermap.insert(pair<string,float>(label,resultts));
