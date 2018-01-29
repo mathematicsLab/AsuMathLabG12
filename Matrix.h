@@ -11,6 +11,8 @@ class Matrix
 
     // constructor
     public : Matrix(int row,int col);
+
+    public : Matrix(std::string s);
    /*  ~Matrix()
     {
         for (int i=0;i<nCol;i++)
@@ -34,8 +36,17 @@ class Matrix
             Matrix elementDivision (Matrix &A);
             Matrix elementDivision (double A);
 
+    public:void horzcat(Matrix& A,Matrix& B);
+   public:void reset();
+   public:std::string toString();
 
-
+		public:static Matrix zeros(int nR, int nC);
+		public:static Matrix ones(int nR, int nC);
+		public:static Matrix eye(int nR, int nC);
+		public:static Matrix randM(int nR, int nC);
+public: static Matrix sin(Matrix m);
+public: static Matrix cos(Matrix m);
+public: static Matrix tan(Matrix m);
 
 
 
@@ -97,25 +108,25 @@ public: static Matrix subtract(Matrix a, Matrix b);
   } */
 
   //*******************************************************************************************
-  Matrix getCofactor(int row,int column) ;  //get the cofactor of matrix NXN
+  public:Matrix getCofactor(int row,int column) ;  //get the cofactor of matrix NXN
 
-    double matDeterminant ();
-    void matProduct(double Const); //Multiply each number in the matrix with Constant
+   public: double matDeterminant ();
+    public:void matProduct(double Const); //Multiply each number in the matrix with Constant
 
-    void minorMat (Matrix &A);  // get matrix of minors
+    public:void minorMat (Matrix &A);  // get matrix of minors
 
-    void matTranspose(Matrix &A); //get the transpose of matrix
+  public:  void matTranspose(Matrix &A); //get the transpose of matrix
 
-    void inverseMat (Matrix A); //Get inverse of the matrix
+    public:void inverseMat (Matrix A); //Get inverse of the matrix
 
     void eye ();
     bool isZeros();
 
-   void multiply (Matrix &A); // Multiply Two matrices
+   public:void multiply (Matrix &A); // Multiply Two matrices
 
-    void Copy(Matrix& A);
-    Matrix operator / (Matrix& A);
-
+   public: void copy(Matrix& A);
+  public:  Matrix operator / (Matrix& A);
+public:Matrix operator / (float x);
 
   //*******************************************************************************************
 

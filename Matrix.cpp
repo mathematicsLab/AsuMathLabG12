@@ -50,6 +50,114 @@ public:
         }       
 
     }
+
+    Matrix::Matrix(string s)
+    {
+        char str[s.size()+1];
+        strcpy(str,s.c_str());
+        char*token;
+        int nR=0,nC=0;
+        token=strtok(str,"[,;,]");
+        while(token)
+        {
+            nR++;
+            token=strtok(NULL,"[,;,]");
+        }
+        int start=s.find("[")+1;
+        int End=s.find(";");
+        string Col=s.substr(start,End-start);
+        char colstring[Col.size()+1];
+        strcpy(colstring,Col.c_str());
+        token=strtok(colstring," ");
+        while (token)
+        {
+            nC++;
+            token=strtok(NULL," ");
+        }
+        nRow=nR;
+        nCol=nC;
+        pData=new double*[nRow];
+        for(int i=0;i<nRow;i++)
+            pData[i]=new double[nCol];
+        strcpy(str,s.c_str());
+        double values[nR*nC];
+        int index=0;
+        token=strtok(str," ,[,],;");
+        while (token)
+        {
+            values[index]=atof(token);
+            index++;
+            token=strtok(NULL," ,[,],;");
+        }
+        int k=0;
+        for (int i=0;i<nRow;i++)
+        {
+            for(int j=0;j<nCol;j++)
+            {
+                pData[i][j]=values[k];
+                k++;
+            }
+        }
+    }
+
+    void Matrix::horzcat(Matrix& A,Matrix& B)
+    {
+              if (pData)
+       {
+           for (int i=0;i<nRow;i++)
+            delete[] pData[i];
+           delete[] pData;
+       }
+       nRow=0;
+       nCol=0;
+       pData=NULL;
+        double temp,temp2;
+        if(A.nRow != B.nRow)
+            throw Exception("InValid Matrix dimension");
+
+        nRow=A.nRow;
+        nCol=A.nCol+B.nCol;
+        pData=new double*[nRow];
+        for(int i=0;i<nRow;i++)
+            pData[i]=new double [nCol];
+        for(int i=0;i<nRow;i++)
+        {
+            int k=0;
+            for(int j=0;j<nCol;j++)
+                {
+
+                    if(j<A.nCol)
+                    {
+                        pData[i][j]=A.pData[i][j];
+                    }
+                    else
+                    {
+                        pData[i][j]=B.pData[i][k];
+                        k++;
+                    }
+                }
+        }
+
+    }
+
+        string Matrix::toString(void)
+    {
+        string mat="";
+        for(int i=0;i<nRow;i++)
+        {
+            for(int j=0;j<nCol;j++)
+            {
+                mat+=to_string(pData[i][j]);
+                if(j!=nCol-1)
+                    mat+=" ";
+            }
+            if(i!=nRow-1)
+                mat+=";";
+        }
+        mat+="";
+        return mat;
+    }
+
    /*  ~Matrix()
     {
         for (int i=0;i<nCol;i++)
@@ -69,6 +177,139 @@ public:
             }
         }
     }
+
+
+   void Matrix:: reset()
+    {
+       if (pData)
+       {
+           for (int i=0;i<nRow;i++)
+            delete[] pData[i];
+           delete[] pData;
+       }
+       nRow=0;
+       nCol=0;
+       pData=NULL;
+    }
+
+    Matrix Matrix::zeros(int nR, int nC)
+{
+	Matrix t(nR, nC);
+	if ((nR*nC) == 0)
+	{
+		t.pData = NULL;
+		return t;
+	}
+	t.pData = new double*[nR];
+	for (int iR = 0; iR < nR; iR++)
+	{
+		t.pData[iR] = new double[nC];
+		for (int iC = 0; iC < nC; iC++)
+		{
+			t.pData[iR][iC] = 0;
+		}
+	}
+	return t;
+}
+
+Matrix Matrix::ones(int nR, int nC)
+{
+	Matrix t(nR, nC);
+	if ((nR*nC) == 0)
+	{
+		t.pData = NULL;
+		return t;
+	}
+	t.pData = new double*[nR];
+	for (int iR = 0; iR < nR; iR++)
+	{
+		t.pData[iR] = new double[nC];
+		for (int iC = 0; iC < nC; iC++)
+		{
+			t.pData[iR][iC] = 1;
+		}
+	}
+	return t;
+}
+
+Matrix Matrix::eye(int nR, int nC)
+{
+	Matrix t(nR, nC);
+	if ((nR*nC) == 0)
+	{
+		t.pData = NULL;
+		return t;
+	}
+	t.pData = new double*[nR];
+	if (nR == nC)
+	{
+		for (int iR = 0; iR < nR; iR++)
+		{
+			t.pData[iR] = new double[nC];
+			for (int iC = 0; iC < nC; iC++)
+			{
+				t.pData[iR][iC] = (iR == iC) ? 1 : 0;
+			}
+		}
+	}
+	else
+	{
+		cout << "error" << endl;
+		Matrix n;
+		return n;
+	}
+	return t;
+}
+
+Matrix Matrix::randM(int nR, int nC)
+{
+	Matrix t(nR, nC);
+	if ((nR*nC) == 0)
+	{
+		t.pData = NULL;
+		return t;
+	}
+	t.pData = new double*[nR];
+	for (int iR = 0; iR < nR; iR++)
+	{
+		t.pData[iR] = new double[nC];
+		for (int iC = 0; iC < nC; iC++)
+		{
+			t.pData[iR][iC] = (rand() % 100) + 1;
+		}
+	}
+	return t;
+}
+
+
+Matrix Matrix::sin(Matrix m){
+	 Matrix temp(m.nRow,m.nCol);
+	 for(int i=0; i<m.nRow; i++){
+			 for(int j=0; j<m.nCol; j++){
+				  temp.pData[i][j]=std::sin(m.pData[i][j]);
+			 }
+	 }
+	 return temp;
+}
+Matrix Matrix::cos(Matrix m){
+	 Matrix temp(m.nRow,m.nCol);
+	 for(int i=0; i<m.nRow; i++){
+			 for(int j=0; j<m.nCol; j++){
+				  temp.pData[i][j]=std::cos(m.pData[i][j]);
+			 }
+	 }
+	 return temp;
+}
+Matrix Matrix::tan(Matrix m){
+	 Matrix temp(m.nRow,m.nCol);
+	 for(int i=0; i<m.nRow; i++){
+			 for(int j=0; j<m.nCol; j++){
+				  temp.pData[i][j]=std::tan(m.pData[i][j]);
+			 }
+	 }
+	 return temp;
+}
+
 
     //Getters
      // index operator. 
@@ -252,6 +493,19 @@ void Matrix::Swap(double& a, double& b)
   b = temp;
 }
 
+
+ Matrix Matrix:: operator /(float x)
+    {
+        Matrix A(nRow,nCol);
+        for(int i=0;i<nRow;i++)
+        {
+            for(int j=0;j<nCol;j++)
+            {
+                A.pData[i][j]=pData[i][j]/x;
+            }
+        }
+        return A;
+    }
 /**
  * returns a diagonal matrix with size n x n with ones at the diagonal
  * @param  v a vector
@@ -756,19 +1010,19 @@ void Matrix::multiply (Matrix &A) // Multiply Two matrices
                 B.pData[iR][iC]+=pData[iR][k]*A.pData[k][iC];
         }
     }
-    this->Copy(B);
+    this->copy(B);
 }
-    void Matrix::Copy(Matrix& A)
-    {
-        if ((nRow != A.nRow) || (nCol != A.nCol))
-            throw "the Matrices must have the same dimension";
-
-            for (int i=0;i<nRow;i++)
-            {
-                for (int j=0;j<nCol;j++)
-                    pData[i][j]=A.pData[i][j];
-            }
-    }
+void Matrix::copy(Matrix& m)
+{
+this->nRow = m.nRow;
+this->nCol = m.nCol;
+if((nRow*nCol)==0)
+{pData=NULL; return;}
+pData = new double*[nRow];
+for(int iR=0;iR<nRow;iR++)
+{pData[iR] = new double[nCol];
+for(int iC=0;iC<nCol;iC++)
+{pData[iR][iC] = m.pData[iR][iC];}}}
     /*
    
     Matrix Matrix::operator / (Matrix & A)
@@ -809,7 +1063,7 @@ Matrix Matrix::operator / (Matrix &A)
        else
        {
 
-        C.Copy(*this);
+        C.copy(*this);
         C.multiply(B);
 
         return C;
