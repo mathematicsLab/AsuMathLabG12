@@ -925,3 +925,90 @@ Matrix Matrix::operator / (Matrix &A)
       return Divide(*this,b);
   } */
 
+  Matrix Matrix::zeros(int nR, int nC)
+  {
+	  Matrix t(nR, nC);
+	  if ((nR*nC) == 0)
+	  {
+		  t.values = NULL;
+		  return t;
+	  }
+	  t.values = new double*[nR];
+	  for (int iR = 0; iR < nR; iR++)
+	  {
+		  t.values[iR] = new double[nC];
+		  for (int iC = 0; iC < nC; iC++)
+		  {
+			  t.values[iR][iC] = 0;
+		  }
+	  }
+	  return t;
+  }
+  Matrix Matrix::ones(int nR, int nC)
+  {
+	  Matrix t(nR, nC);
+	  if ((nR*nC) == 0)
+	  {
+		  t.values = NULL;
+		  return t;
+	  }
+	  t.values = new double*[nR];
+	  for (int iR = 0; iR < nR; iR++)
+	  {
+		  t.values[iR] = new double[nC];
+		  for (int iC = 0; iC < nC; iC++)
+		  {
+			  t.values[iR][iC] = 1;
+		  }
+	  }
+	  return t;
+  }
+  Matrix Matrix::eye(int nR, int nC)
+  {
+	  Matrix t(nR, nC);
+	  if ((nR*nC) == 0)
+	  {
+		  t.values = NULL;
+		  return t;
+	  }
+	  t.values = new double*[nR];
+	  if (nR == nC)
+	  {
+		  for (int iR = 0; iR < nR; iR++)
+		  {
+			  t.values[iR] = new double[nC];
+			  for (int iC = 0; iC < nC; iC++)
+			  {
+				  t.values[iR][iC] = (iR == iC) ? 1 : 0;
+			  }
+		  }
+	  }
+	  else
+	  {
+		  cout << "error" << endl;
+		  Matrix n;
+		  return n;
+	  }
+	  return t;
+  }
+  Matrix Matrix::randM(int nR, int nC)
+  {
+	  Matrix t(nR, nC);
+	  if ((nR*nC) == 0)
+	  {
+		  t.values = NULL;
+		  return t;
+	  }
+	  t.values = new double*[nR];
+	  for (int iR = 0; iR < nR; iR++)
+	  {
+		  t.values[iR] = new double[nC];
+		  for (int iC = 0; iC < nC; iC++)
+		  {
+			  t.values[iR][iC] = (rand() % 100) + 1;
+		  }
+	  }
+	  return t;
+  }
+
+

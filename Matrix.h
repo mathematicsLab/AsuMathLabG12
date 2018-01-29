@@ -139,4 +139,8 @@ public: Matrix Transpose(Matrix A); //get the transpose of matrix
  /* Matrix operator/(Matrix b){
       return Divide(*this,b);
   } */
+		  static Matrix zeros(int nR, int nC);
+		  static Matrix ones(int nR, int nC);
+		  static Matrix eye(int nR, int nC);
+		  static Matrix randM(int nR, int nC);
 };

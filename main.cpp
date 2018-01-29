@@ -218,6 +218,8 @@ void operation(string input )
 }
 }
 
+string strValues(string str, string s, string e);
+void matFun(Matrix & x, string s);
 int main(int argc, char* argv[]){
   
        int x=0;
@@ -243,12 +245,53 @@ int main(int argc, char* argv[]){
 while ( getline (inFile,input)) {
 
 // cout<<input<<endl;
+	// eye , rand , ones , zeros
+	string str = strValues(input, "(", ")");
+	remove_if(str.begin(), str.end(), isspace);
+	string name = input.substr(0, 1);
+	matMap.insert(pair<string, Matrix>(name, Matrix((int)str[1] - 48, (int)str[3] - 48)));
+	matFun(matMap.at(name), input);
+
+
       operation(input);
 
 }
 
     }
 }
+
+string strValues(string str, string s = "[", string e = "]")
+{
+	int start = str.find(s);
+	int end = str.find(e);
+	if (start != std::string::npos && end != std::string::npos)
+	{
+		return str.substr(start, end + 1);
+	}
+	return "empty";
+}
+void matFun(Matrix & x, string s)
+{
+	string str = strValues(s, "(", ")");
+	remove_if(str.begin(), str.end(), isspace);
+	if (s.find("zeros") != std::string::npos)
+	{
+		x = Matrix::zeros((int)str[1] - 48, (int)str[3] - 48);
+	}
+	else if (s.find("ones") != std::string::npos)
+	{
+		x = Matrix::ones((int)str[1] - 48, (int)str[3] - 48);
+	}
+	else if (s.find("eye") != std::string::npos)
+	{
+		x = Matrix::eye((int)str[1] - 48, (int)str[3] - 48);
+	}
+	else if (s.find("rand") != std::string::npos)
+	{
+		x = Matrix::randM((int)str[1] - 48, (int)str[3] - 48);
+	}
+}
+
 
 
 /*
