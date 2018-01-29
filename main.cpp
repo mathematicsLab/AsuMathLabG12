@@ -179,6 +179,7 @@ void infix2postfix(string infix,string  &postfix, int size) {
 			s.pop();
 			if(st=="/")
 			{	
+				if(op2==0)throw ("Devided by zero");
 				result=	op1/op2;
 				s.push(to_string(result));
 				i++;
@@ -309,6 +310,7 @@ void infix2postfix(string infix,string  &postfix, int size) {
 			{	
 				if( flag1 == 0 &&flag2==0&&flag3==0&&flag4==0)
 				{
+					if(op2==0)throw("Devided By zero");
 				result2 =	op1/op2;
 				s.push(to_string(result2));
 				i++;
@@ -323,20 +325,24 @@ void infix2postfix(string infix,string  &postfix, int size) {
 					counterra++;
 					continue;
 				}
-				/*if(flag1==0&&flag2==0&&flag3==0&&flag4==1)
+				if(flag1==0&&flag2==0&&flag3==0&&flag4==1)
 				{
-					result = op2/op4;
+					result = op2 / op4;
 					matMap.insert(pair<string,Matrix>(randomarray[counterra],result));
 					s.push(randomarray[counterra]);
 					i++;
 					counterra++;
 					continue;
-				}*/
-				/*if(flag1==0&&flag2==1&&flag3==0&&flag4==0)
+				}
+				if(flag1==0&&flag2==1&&flag3==0&&flag4==0)
 				{
 					result = op2 / op3 ;
-
-				}*/
+					matMap.insert(pair<string,Matrix>(randomarray[counterra],result));
+					s.push(randomarray[counterra]);
+					i++;
+					counterra++;
+					continue;
+				}
 			}
 			if(st=="+")
 			{	
