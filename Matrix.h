@@ -39,7 +39,9 @@ class Matrix
 
 
 
-
+public: static Matrix sin(Matrix m);
+public: static Matrix cos(Matrix m);
+public: static Matrix tan(Matrix m);
 
     //Getters
      // index operator.
