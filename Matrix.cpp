@@ -1306,3 +1306,7 @@ Matrix Matrix::operator / (Matrix &A)
   {
     return elementDPower(mad); 
   }
+  Matrix Matrix::operator &(double A)
+  {
+    return elementDivision(A); 
+  }
