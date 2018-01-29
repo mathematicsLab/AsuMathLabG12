@@ -1304,5 +1304,5 @@ Matrix Matrix::operator / (Matrix &A)
   }
   Matrix Matrix::operator !(double mad)
   {
-    return elementPower(mad); 
+    return elementDPower(mad); 
   }
