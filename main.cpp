@@ -575,15 +575,6 @@ void infix2postfix(string infix,string  &postfix, int size) {
 
 void operation(string input )
 {
-        if (input.find('./'))
-        {
-          input.replace(input.find('./'),2,'');
-     
-        }
-        if(input.find('.^'))
-        {
-          input.replace(input.find('.^'),2,'!');
-        }
 
         static map<string, Matrix> matMap; 
         //cout<<input<<endl;
@@ -985,7 +976,6 @@ if (print == 1)
   }
      if(is&&input.size()>5)
      {
-      //cout<<"HEna"<<endl;
        string label;
        int xaa=input.find("=");
        for(int aac=0;aac<xaa+1;aac++)
@@ -1002,16 +992,13 @@ if (print == 1)
        Matrix resultsaaq=parsing2(postfix,matMap,numbermap);//test
       // numbermap.insert(pair<string,float>(label,resultts));
        it = matMap.find(label);
-     if(it != matMap.end())
-     {
-       matMap.erase(it);
-     }
+       if(it != matMap.end())
+           {
 
-       matMap.insert(pair<string,Matrix>(name,resultsaaq));
-       matrixnames[matrixnum]=name;
-       //cout<<name<<"is&&"<<endl;
-       //cout<<label<<endl;
-       matrixnum++;
+               matMap.erase(it);
+           }
+       matMap.insert(pair<string,Matrix>(label,resultsaaq));
+
        if(!flaggq)
          {cout<<label<<" ="<<endl;
        resultsaaq.printMatrix();}
@@ -1023,7 +1010,7 @@ if (print == 1)
       matMap.erase(it);
     }
      }
-     if(!is)
+if(!is)
      {
        string label;
        int xaa=input.find("=");
@@ -1036,19 +1023,32 @@ if (print == 1)
          }
        }
        string postfix;//= new char [input.size()*4];
-       infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,input.substr(xaa+1,input.size()-xaa).size());
+
+       infix2postfix(input.substr(xaa+1,input.size()-xaa),postfix,(input.substr(xaa+1,input.size()-xaa)).size());
        float resultts=parsing(postfix);
        //Matrix resultsaaq=parsing2(postfix,matMap,numbermap);//test
+        Matrix A(1,1);
+      A.pData[0][0]=resultts;
        it = matMap.find(label);
+    it2 = numbermap.find(label);
      if(it != matMap.end())
      {
        matMap.erase(it);
      }
+     if(it2 != numbermap.end())
+     {
+       numbermap.erase(it2);
+     }
+      matMap.insert(pair<string,Matrix>(label,A));
+      matrixnames[matrixnum]=label;
+      matrixnum++;
+
        numbermap.insert(pair<string,float>(label,resultts));
        if(!flaggq)
          {cout<<label<<" ="<<endl;
        cout<<resultts<<endl;
        }}
+
 
 
       if(input[input.size()-1]=='\''&&is){
@@ -1085,7 +1085,7 @@ if (print == 1)
 
             else if(input[input.size()-1]==']' || input[input.size()-2]==']' )
         {
-         // cout<<"Mahmoud"<<endl;
+         cout<<"Mahmoud"<<endl;
             //count number of rows $ col
         int numRow=1,numCol=1;
         for(int i=input.find('[');i<((input.find(';')<input.size()?input.find(';'):input.find(']')));i++){if(input[i]==' ' && input[i-1]!='[' && input[i+1]!=';')numCol++;}
@@ -1191,7 +1191,7 @@ if (print == 1)
 
 
 
-      if(input[input.size()-1]=='\''){
+      /*if(input[input.size()-1]=='\''){
          
 
              for(int i=input.find('=')+1;i<input.length();i++){
@@ -1216,10 +1216,9 @@ if (print == 1)
              matMap.at(name).printMatrix();
 
 
-         }  
+         }  */
 }
 }
-
 int main(int argc, char* argv[]){
   
        int x=0;
@@ -1246,7 +1245,6 @@ int main(int argc, char* argv[]){
     
        else{ remove(s.c_str()); input=input+s+" ";  }
 }*/
-
 while ( getline (inFile,input)) {
 
 // cout<<input<<endl;
@@ -1255,7 +1253,20 @@ while ( getline (inFile,input)) {
 }
 
     }
- /*   
+    if(argc<=1)
+    {
+      string inputcommand;
+      //cout<<">>";
+      while ( getline (cin,inputcommand)) {
+//cout<<">>";
+// cou/t<<input<<endl;
+      operation(inputcommand);
+
+}
+
+    }
+     /*   
+    }
     
  string s="B = [1.2 2.3 3.2;[1.3 2.4 3.1;4.6 1.3 5.1]]";
 

@@ -1102,114 +1102,6 @@ Matrix Matrix::operator / (Matrix &A)
             }
             return B;
     }
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////power zone/////////////
-
-
-    //get int power of matrix elements 
-    Matrix Matrix::elementPower (int A)
-    {
-       Matrix B(nRow,nCol);//printf("in ele pow\n");
-            for (int r=0;r<nRow;r++)
-            {
-                for (int c=0;c<nCol;c++)
-                {
-                  double element_term=1;
-
-                    for (int i = 0; i < A; i++)
-                    {
-                      B.pData[r][c]=pData[r][c]*element_term;
-                      element_term=B.pData[r][c];
-                    }
-                }
-            }
-            return B;
-    }
-    //get double power of matrix elements 
-    Matrix Matrix::elementDPower (double A)
-    {
-            Matrix B(nRow,nCol);//printf("in ele d pow\n");
-            for (int r=0;r<nRow;r++)
-            {
-                for (int c=0;c<nCol;c++)
-                {
-                  double element_term=1.0;double frac_term=1.0;
-
-                    for (int i = 0; i < int(A); i++)
-                    {
-                      B.pData[r][c]=pData[r][c]*element_term;
-                      element_term=B.pData[r][c];
-                    }
-                    B.pData[r][c]=element_term*pow((pData[r][c]),A-double(int(A)));
-                }
-            }
-            return B;
-    }
-    // expected algorithm to optimize multiply of power 
-    Matrix Matrix::logAlgorithm(Matrix m,int A){
-            Matrix t(m.nRow,m.nCol); t.eye();
-            Matrix getback(m.nRow,m.nCol); getback.eye();
-            getback.multiply(m);
-            if(A%2){
-                     t.multiply(m);//printMF(t);
-                     A=A-1;
-            }
-            while(A > 0){
-                      Matrix n = m;//printMF(n);
-                      double f_log = double(int(log2(A)));
-                      for(int i =0;i <f_log;i++){
-                            n.multiply(n);// there are a problem here that the main matrix elements changes and solved by getback .
-                      }
-                      t.multiply(n);
-                      A =A - pow(2,f_log);
-            }
-            m.Copy(getback);//printMF(m);
-            return t;
-      }
-    
-    
-    //test function to monitor matrix from the function
-    void Matrix :: printMF(Matrix s)
-    {
-      for (int i = 0; i < s.nRow; i++)
-      {
-        for (int j = 0; j < s.nCol; j++)
-        {
-          printf("%f ",s.pData[i][j]);
-        }
-        printf("\n");
-      }
-    }
-    //get int power of nxn matrix (without optimization)
-    Matrix Matrix::getpower (Matrix s,int A)
-    {
-           Matrix k (s.nRow,s.nCol);k.eye();
-
-           for (int i = 0; i < A; i++) 
-             {
-                k.multiply(s);
-             }
-             return k;
-    }
-    //get double power of 1x1 matrix
-    Matrix Matrix::getDpower (Matrix s,double A)
-    {
-      //printf("in double pow and A = %f\n",A );
-      double single_element = this -> pData[0][0];
-       double element_term=1.0;
-
-                    for (int i = 0; i < int(A); i++)
-                    {
-                      element_term*=single_element;
-                    }
-                    single_element=element_term*pow(single_element,A-double(int(A)));
-
-      Matrix B(1,1) ; B.pData[0][0]=single_element;
-      return B;
-    }
-
-  //*******************************************************************************************
-
 
     
    
@@ -1234,21 +1126,8 @@ Matrix Matrix::operator / (Matrix &A)
     return C;
 }
  Matrix Matrix::operator =(Matrix a){
-    Matrix t;
-     t.nRow = a.nRow;
-    t.nCol = a.nCol;
-    t.pData = new double*[a.nRow];
-    for (int r = 0; r < a.nRow; r++)
-    {
-      t.pData[r] = new double[a.nCol];
-
-      // copy the values from the matrix a
-      for (int c = 0; c < a.nCol; c++)
-      {
-        t.pData[r][c] = a.pData[r][c];
-      }
-    }
-    return t;
+copy(a);
+return*this;
 }
  Matrix Matrix:: Transpose(Matrix A) //get the transpose of matrix
     {
@@ -1287,26 +1166,3 @@ Matrix Matrix::operator / (Matrix &A)
       return Divide(*this,b);
   } */
 
-  //power operators of matrix 
-  Matrix Matrix::operator ^(double mad)
-  {
-    return getDpower(*this,mad);
-
-  }
-  Matrix Matrix::operator ^(int mad)
-  {
-    return logAlgorithm(*this,mad); 
-  }
-// elements power int and double 
-  Matrix Matrix::operator !(int mad)
-  {
-    return elementPower(mad);
-  }
-  Matrix Matrix::operator !(double mad)
-  {
-    return elementDPower(mad); 
-  }
-  Matrix Matrix::operator &(double A)
-  {
-    return elementDivision(A); 
-  }

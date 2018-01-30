@@ -129,16 +129,6 @@ public: static Matrix subtract(Matrix a, Matrix b);
 public:Matrix operator / (float x);
 
   //*******************************************************************************************
-	//power members//
- public :Matrix getpower (Matrix s,int A);
- // get (double)(fractional) power for 1x1 matrix
- public :Matrix getDpower (Matrix s , double a);
- public :Matrix logAlgorithm(Matrix m,int A);//optimized power
- public :Matrix elementPower (int A);
- public :Matrix elementDPower (double A);
- public :void printMF(Matrix s);
-
-//******************************************************************************************
 
  public: Matrix operator+ ( double b);
 
@@ -160,10 +150,4 @@ public: Matrix Transpose(Matrix A); //get the transpose of matrix
  /* Matrix operator/(Matrix b){
       return Divide(*this,b);
   } */
-  public : Matrix operator^ (int mad);
-  public : Matrix operator^ (double mad);
-  public : Matrix operator!(int mad);
-  public : Matrix operator!(double mad);
-  public : Matrix operator&(double A);
-
 };
